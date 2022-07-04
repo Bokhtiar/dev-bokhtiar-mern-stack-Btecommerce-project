@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(fileUpload())
 
 // app.use('/uploads/', express.static('uploads/'))
-// app.use('/uploads/category', express.static('uploads/category/'))
+app.use('/uploads/category', express.static('uploads/category/'))
 
 app.get('/', async (req, res) => {
     res.send("Wow!😯 are you here🙃🙃 but you have no access!!! 😜😜😜")
