@@ -1,5 +1,5 @@
 const categories = require("../../models/categories.model");
-const { FileUpload, Host } = require("../../helplers/index");
+const { FileUpload, Host, DeleteFile } = require("../../helplers/index");
 
 /*List*/
 const index = async (req, res, next) => {
@@ -13,6 +13,7 @@ const index = async (req, res, next) => {
         items.push({
           _id: element._id,
           name: element.name,
+          cat_status: element.cat_status,
           image: element.image
             ? Host(req) + "uploads/category/" + element.image
             : null,
@@ -57,19 +58,30 @@ const store = async (req, res, next) => {
   }
 };
 
-/*show*/
-const show = async (req, res, next) => {
-  res.status(200).json({
-    status: true,
-    message: "done",
-  });
-};
 /*status change*/
 const status = async (req, res, next) => {
-  res.status(200).json({
-    status: true,
-    message: "done",
-  });
+  try {
+    const { id } = req.params;
+    const IsStatus = await categories.findOne({ id });
+    if (IsStatus.cat_status == false) {
+      IsStatus.cat_status = true;
+      await IsStatus.save();
+      res.status(200).json({
+        status: true,
+        message: "Category Status Is Active...!",
+      });
+    } else {
+      IsStatus.cat_status = false;
+      await IsStatus.save();
+      res.status(200).json({
+        status: true,
+        message: "Category Status Is Deactive...!",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
 };
 
 /*update */
@@ -82,35 +94,34 @@ const update = async (req, res, next) => {
 
 /*Delete */
 const destroy = async (req, res, next) => {
-    try {
-        const { id } = req.params
+  try {
+    const { id } = req.params;
 
-        const isRemoved = await categories.findByIdAndDelete(id)
-        if (!isRemoved) {
-            return res.status(501).json({
-                status: false,
-                message: "Something going wrong."
-            })
-        }
- 
-        await DeleteFile("./uploads/category/", isRemoved.image) 
-
-        res.status(200).json({
-            status: true,
-            message: "Category Deleted Successfully...!"
-        })
-    } catch (error) {
-        if (error) {
-            console.log(error)
-            next(error)
-        }
+    const isRemoved = await categories.findByIdAndDelete(id);
+    if (!isRemoved) {
+      return res.status(501).json({
+        status: false,
+        message: "Something going wrong.",
+      });
     }
+
+    await DeleteFile("./uploads/category/", isRemoved.image);
+
+    res.status(200).json({
+      status: true,
+      message: "Category Deleted Successfully...!",
+    });
+  } catch (error) {
+    if (error) {
+      console.log(error);
+      next(error);
+    }
+  }
 };
 
 module.exports = {
   index,
   store,
-  show,
   update,
   status,
   destroy,
