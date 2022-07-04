@@ -6,7 +6,7 @@ const list = async (req, res, next) => {
     const results = await admins.find();
     res.status(201).json({
       status: true,
-      data: results,
+      data: results
     });
   } catch (error) {
     console.log(error);
@@ -93,4 +93,5 @@ const register = async (req, res, next) => {
 module.exports = {
   login,
   register,
+  list
 };
