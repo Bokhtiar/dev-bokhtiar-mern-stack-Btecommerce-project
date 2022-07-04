@@ -3,5 +3,8 @@ const productController = require('../../controller/adminController/productContr
 
 productRoute.get('/', productController.list)
 productRoute.post('/', productController.store)
+productRoute.get('/:id', productController.show)
+productRoute.put('/:id', productController.update)
+productRoute.delete('/:id', productController.destroy)
 
 module.exports = productRoute
