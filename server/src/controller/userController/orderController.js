@@ -1,6 +1,7 @@
 const orders = require('../../models/order.model')
 const carts = require('../../models/cart.model')
 
+
 /*list */
 const list = async(req, res, next) => {
     try {
@@ -23,6 +24,18 @@ const store = async(req, res, next) => {
         const {
             name, email, phone, location, payment_number, payment_Type
         }=req.body
+
+        const results = await carts.find()
+                            .where('user_id', req.user.id)
+                            .where('order_id', null)
+        console.log(results)
+
+        if(results.length ===0){
+            res.status(201).json({
+                status: true,
+                message: "Cart Item Not Availabe...!"
+            })
+        }
         const newOrder = new orders({
             name,
             email,
@@ -33,9 +46,6 @@ const store = async(req, res, next) => {
             user_id: req.user.id,
         })
         if(newOrder){
-            const results = await carts.find()
-                            .where('user_id', req.user.id)
-                            .where('order_id', null)
             results.forEach(element => {
                 element.order_id = newOrder._id
                 element.save()
