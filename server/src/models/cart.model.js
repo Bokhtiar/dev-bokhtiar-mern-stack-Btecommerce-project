@@ -9,11 +9,13 @@ const newSchema = new Schema({
     user_id:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "users",
+        require: true
     },
     order_id:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "orders",
-        require: false
+        require: false,
+        default: null
     },
     quantity:{
         type:Number,
