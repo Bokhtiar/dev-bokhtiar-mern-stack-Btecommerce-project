@@ -4,12 +4,14 @@ const adminRoute = require('../router/adminRouter/auth/admin.route')
 const categoryRoute = require('../router/adminRouter/category.route.js')
 const productRoute = require('../router/adminRouter/product.route')
 const cartRoute = require('./userRouter/cartRoute')
+const orderRoute = require('./userRouter/order.route')
 const userRoute = require('./userRouter/user.route')
 
 
 /*user route */
 appRouter.use('/user', userRoute)
 appRouter.use('/cart', IsUser, cartRoute)
+appRouter.use('/order', IsUser, orderRoute)
 
 
 /*admin route*/
