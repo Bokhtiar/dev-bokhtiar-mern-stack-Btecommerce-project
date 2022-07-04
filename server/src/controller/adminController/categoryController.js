@@ -86,10 +86,37 @@ const status = async (req, res, next) => {
 
 /*update */
 const update = async (req, res, next) => {
-  res.status(200).json({
-    status: true,
-    message: "done",
-  });
+  try {
+    const { id } = req.params
+    const { name } = req.body
+    const image = req.files.image
+
+    const uploadFile = await FileUpload(image, "./uploads/category/");
+    if (!uploadFile) {
+      return res.status(501).json({
+        status: false,
+        message: "Failed to upload image",
+      });
+    }
+
+    await categories.findByIdAndUpdate(
+        id,
+        {
+            $set: {
+                name,
+                image:uploadFile
+            }
+        }
+    )
+
+    res.status(200).json({
+        status: true,
+        message: "Category Updated Successfully...!"
+    })
+} catch (error) {
+    console.log(error);
+    next(error)
+}
 };
 
 /*Delete */
